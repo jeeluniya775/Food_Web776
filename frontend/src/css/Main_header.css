@@ -1,0 +1,34 @@
+/* Main_header.css */
+
+/* Styling for the navbar background */
+.navbar {
+  background-color: black; /* Black background */
+}
+
+/* Styling for brand name */
+
+/* Links inside navbar */
+.nav-link {
+  color: white !important; /* Ensure links are white */
+}
+
+/* Navbar button styles (outline gray) */
+.btn-outline-secondary {
+  color: gray; /* Text color */
+  border-color: gray; /* Border color */
+}
+
+.btn-outline-secondary:hover {
+  background-color: gray; /* Background color on hover */
+  color: white; /* Text color on hover */
+}
+
+/* Styling for the search input */
+.form-control {
+  border-color: gray !important; /* Border color for input field */
+}
+
+.form-control:focus {
+  border-color: gray !important; /* Focus border color */
+  box-shadow: 0 0 0 0.2rem rgba(108, 117, 125, 0.25); /* Focus shadow */
+}
