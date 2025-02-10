@@ -9,7 +9,7 @@ interface RecipeFormData {
   servings: string;
   ingredients: string;
   description: string;
-  madeBy: string;
+  author: string;
   image: File | null;
 }
 
@@ -21,7 +21,7 @@ const Add: React.FC = () => {
     servings: "",
     ingredients: "",
     description: "",
-    madeBy: "",
+    author: "",
     image: null,
   });
 
@@ -34,7 +34,7 @@ const Add: React.FC = () => {
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files.length > 0) {
-      setFormData((prev) => ({ ...prev, image: e.target.files[0] }));
+      setFormData((prev) => ({ ...prev, image: e.target.files![0] }));
     }
   };
 
@@ -44,7 +44,11 @@ const Add: React.FC = () => {
 
     Object.entries(formData).forEach(([key, value]) => {
       if (value !== null) {
-        formDataToSend.append(key, value);
+        if (key === "image" && value instanceof File) {
+          formDataToSend.append(key, value);
+        } else {
+          formDataToSend.append(key, String(value));
+        }
       }
     });
 
@@ -52,7 +56,13 @@ const Add: React.FC = () => {
       const response = await fetch("http://localhost:5001/recipes/create", {
         method: "POST",
         body: formDataToSend,
+        credentials: "include", // Ensures authentication cookies are sent
       });
+
+      if (response.status === 401) {
+        alert("You are not logged in. Please log in first.");
+        return;
+      }
 
       if (response.ok) {
         alert("Recipe added successfully!");
@@ -63,14 +73,15 @@ const Add: React.FC = () => {
           servings: "",
           ingredients: "",
           description: "",
-          madeBy: "",
+          author: "",
           image: null,
         });
       } else {
-        alert("Failed to add recipe.");
+        alert("Failed to add recipe. Please try again.");
       }
     } catch (error) {
       console.error("Error submitting form:", error);
+      alert("An error occurred. Please check your connection and try again.");
     }
   };
 
@@ -174,12 +185,12 @@ const Add: React.FC = () => {
             </div>
 
             <div className="form-group">
-              <label htmlFor="madeBy">Made By</label>
+              <label htmlFor="author">Made By</label>
               <input
                 type="text"
-                id="madeBy"
+                id="author"
                 className="form-control"
-                value={formData.madeBy}
+                value={formData.author}
                 onChange={handleChange}
                 required
               />

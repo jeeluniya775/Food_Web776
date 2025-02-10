@@ -3,9 +3,9 @@ const path = require("path");
 const fs = require("fs");
 
 // Ensure the 'uploads' directory exists
-const uploadDir = "uploads";
+const uploadDir = path.join(__dirname, "../uploads");
 if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir);
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 const storage = multer.diskStorage({
@@ -17,21 +17,24 @@ const storage = multer.diskStorage({
   },
 });
 
+const fileFilter = (req, file, cb) => {
+  const allowedTypes = /jpeg|jpg|png/;
+  const isValidExt = allowedTypes.test(
+    path.extname(file.originalname).toLowerCase()
+  );
+  const isValidMime = allowedTypes.test(file.mimetype);
+
+  if (isValidExt && isValidMime) {
+    cb(null, true);
+  } else {
+    cb(new Error("Only .jpeg, .jpg, and .png formats are allowed!"), false);
+  }
+};
+
 const upload = multer({
   storage,
-  fileFilter: (req, file, cb) => {
-    const fileTypes = /jpeg|jpg|png/;
-    const extname = fileTypes.test(
-      path.extname(file.originalname).toLowerCase()
-    );
-    const mimeType = fileTypes.test(file.mimetype);
-
-    if (mimeType && extname) {
-      return cb(null, true);
-    } else {
-      cb(new Error("Error: Images only!")); // Improved error handling
-    }
-  },
+  limits: { fileSize: 2 * 1024 * 1024 }, // Limit file size to 2MB
+  fileFilter,
 });
 
 module.exports = upload;

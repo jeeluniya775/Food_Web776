@@ -1,53 +1,50 @@
-import React, { useState } from "react";
+import React, { useState, ChangeEvent, FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 
-const LoginPage = () => {
-  const [userdata, setuserdata] = useState({
+interface UserData {
+  email: string;
+  password: string;
+}
+
+const LoginPage: React.FC = () => {
+  const navigate = useNavigate();
+  const [userdata, setUserdata] = useState<UserData>({
     email: "",
     password: "",
   });
-  const navigate = useNavigate();
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  
-    const { name, value } = e.target;
-    setuserdata({ ...userdata, [name]: value });
+  const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setUserdata({ ...userdata, [e.target.name]: e.target.value });
   };
 
-  const handleLogin = async (event: React.FormEvent) => {
-    event.preventDefault();
+  const handleLogin = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       const response = await fetch("http://localhost:5001/user/login", {
         method: "POST",
+        credentials: "include", // Ensures cookies are sent with requests
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(userdata),
       });
 
-      const result = await response.json();
-      console.log(result);
-
-      setuserdata({
-        email: "",
-        password: "",
-      });
+      const data = await response.text();
+      if (response.ok) {
+        alert("Login successful");
+        navigate("/"); // Redirect after login
+      } else {
+        alert(data);
+      }
     } catch (error) {
-      console.log("Error:", error);
-      alert("An error occurred. Please try again later.");
+      console.error("Error during login:", error);
+      alert("An error occurred. Please try again.");
     }
-  };
-
-  const handleClose = () => {
-    navigate("/");
   };
 
   return (
     <div className="login-container">
       <div className="login-card">
-        <button className="close-button" onClick={handleClose}>
-          ✖
-        </button>
         <h1 className="login-title">Login</h1>
         <form onSubmit={handleLogin} className="login-form">
           <div className="form-group">

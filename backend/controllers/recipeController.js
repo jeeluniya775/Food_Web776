@@ -11,7 +11,21 @@ exports.createRecipe = async (req, res) => {
       servings,
       ingredients,
     } = req.body;
-    const image = req.file ? req.file.path : "";
+
+    // Basic validation
+    if (
+      !name ||
+      !description ||
+      !author ||
+      !category ||
+      !preparationTime ||
+      !servings ||
+      !ingredients
+    ) {
+      return res.status(400).json({ message: "All fields are required" });
+    }
+
+    const image = req.file ? req.file.filename : ""; // Store only filename, not full path
 
     const recipe = new Recipe({
       name,
@@ -25,9 +39,26 @@ exports.createRecipe = async (req, res) => {
     });
 
     const savedRecipe = await recipe.save();
-    res.status(201).json(savedRecipe);
+    res
+      .status(201)
+      .json({ message: "Recipe created successfully", recipe: savedRecipe });
   } catch (error) {
-    res.status(500).json({ message: error.message });
+    console.error("Error creating recipe:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error. Please try again later." });
+  }
+};
+
+exports.getAllRecipes = async (req, res) => {
+  try {
+    const recipes = await Recipe.find();
+    res.status(200).json(recipes);
+  } catch (error) {
+    console.error("Error fetching recipes:", error);
+    res
+      .status(500)
+      .json({ message: "Internal server error. Please try again later." });
   }
 };
 
