@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-
 const recipeSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -9,9 +8,9 @@ const recipeSchema = new mongoose.Schema(
     preparationTime: { type: Number, required: true },
     servings: { type: Number, required: true },
     ingredients: { type: [String], required: true },
-    image: { type: String },
+    image: { type: String }, // Should store full image URLs
+    liveDate: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );
-
 module.exports = mongoose.model("Recipe", recipeSchema);

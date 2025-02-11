@@ -7,11 +7,7 @@ const Categories = () => {
       <h2 className="heading">Popular Categories</h2>
       <div className="Cat_circle">
         <CategoriesCircleCard />
-        <CategoriesCircleCard />
-        <CategoriesCircleCard />
-        <CategoriesCircleCard />
-        <CategoriesCircleCard />
-        <CategoriesCircleCard />
+     
       </div>
     </div>
   );

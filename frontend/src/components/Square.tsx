@@ -1,25 +1,49 @@
-import React from 'react'
+import React from "react";
 
-const Square = () => {
-  return (
-    <>
-      <div className="card">
-        <img
-          src="https://static.vecteezy.com/system/resources/previews/035/539/767/large_2x/ai-generated-donalt-sweet-yami-delicious-food-in-2024-food-festival-free-photo.jpg"
-          alt="Donuts"
-        />
-        <div className="card-content">
-          <div className="title">Delicious Fancy Glazed Blueberry Donut</div>
-          <div className="author">
-            <span>Tricia Albert</span>
-          </div>
-          <div className="meta">
-            <span> live date Yesterday</span>
-          </div>
-        </div>
-      </div>
-    </>
-  );
+// Define prop types for Square component
+interface SquareProps {
+  recipe: {
+    _id: string;
+    name: string;
+    author: string;
+    description: string; // Added description
+    image?: string;
+    createdAt: string; // Use createdAt as the live date
+  };
 }
 
-export default Square
+const Square: React.FC<SquareProps> = ({ recipe }) => {
+  console.log("Recipe Data:", recipe); // Debugging
+
+  return (
+    <div className="card">
+      <img
+        src={recipe.image || "https://via.placeholder.com/150"}
+        alt={recipe.name}
+        style={{
+          width: "100%",
+          height: "250px",
+          objectFit: "cover",
+          borderRadius: "10px",
+        }}
+      />
+
+      <div className="card-content">
+        <div className="title">{recipe.name}</div>
+        <div className="author">
+          <span>{recipe.author}</span>
+        </div>
+        <div className="description">
+          <p>{recipe.description}</p> {/* Added description */}
+        </div>
+        <div className="meta">
+          <span>
+            Live date: {new Date(recipe.createdAt).toLocaleDateString("en-US")}
+          </span>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Square;
