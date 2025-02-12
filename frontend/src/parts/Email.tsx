@@ -1,20 +1,20 @@
 import React, { useState } from "react";
 
-const Email = () => {
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
+const Email: React.FC = () => {
+  const [email, setEmail] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setMessage("");
 
-    if (!email) {
+    if (!email.trim()) {
       setMessage("Please enter a valid email address.");
       return;
     }
 
     try {
-      const response = await fetch("http://localhost:5001/subscribe", {
+      const response = await fetch("http://localhost:5001/user/email", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -22,15 +22,20 @@ const Email = () => {
         body: JSON.stringify({ email }),
       });
 
-      const data = await response.json();
+      const data: { error?: string; message?: string } = await response.json();
+
       if (response.ok) {
-        setMessage("Thank you for subscribing!");
+        setMessage(data.message || "Thank you for subscribing!");
         setEmail("");
       } else {
         setMessage(data.error || "Subscription failed. Try again.");
       }
     } catch (error) {
-      setMessage("Network error. Please try again later.");
+      if (error instanceof Error) {
+        setMessage(error.message || "Network error. Please try again later.");
+      } else {
+        setMessage("An unknown error occurred. Please try again.");
+      }
     }
   };
 

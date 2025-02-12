@@ -37,7 +37,7 @@ const sendemail = (req, res) => {
     port: 465,
     auth: {
       user: "jeelpatel1817@gmail.com",
-      pass: "ucaz wxca fjfw rscy",
+      pass: "mgbc ghoi xwvg apef",
     },
     tls: { rejectUnauthorized: false },
   });
@@ -60,7 +60,7 @@ const sendemail = (req, res) => {
   });
 };
 
-app.route("/user/email").get(sendemail);
+app.post("/user/email", sendemail);
 
 app.listen(5001, () => {
   console.log("Server is running on port 5001");
